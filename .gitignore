@@ -1,0 +1,94 @@
+.DS_Store
+/.build
+/Packages
+xcuserdata/
+DerivedData/
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+Docs/
+boostcl/
+TODO.txt
+DistTemplate.txt
+.home/
+KS-OPT.md
+## OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+node_modules*
+## Archives & binaries
+*.zip
+*.pdf
+*.dSYM
+*.ipa
+*.app
+*.framework
+*.xcarchive
+session.log
+changelog.temp.txt
+transscript.txt
+*.json
+.swift-module-cache/
+tmp*.swift
+## Editors/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+./home
+## Swift Package Manager
+/.build
+/.swiftpm/
+/Packages
+Package.resolved
+
+## Xcode
+*.xccheckout
+*.xcscmblueprint
+*.moved-aside
+*.xcuserstate
+*.xcuserdatad
+*.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+.clang-module-cache/
+changelog.temp.txt
+
+## Local build dirs
+/build/
+/Products/
+SwiftyStats/build/
+.build
+.clang-module-cache/
+ModuleCache.noindex/
+
+## Dependency managers
+Pods/
+Carthage/Build/
+Carthage/Checkouts/
+
+## Docs/tool outputs (regenerate locally)
+docs/docsets/**/*.tgz
+docs/docsets/**/*.docset
+docs/undocumented.json
+
+## Logs and temp files
+*.log
+*.tmp
+*.temp
+
+## Secrets (security)
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.cer
+*.mobileprovision
+*.credentials
+*.secret
+secrets/
+credentials/
+TODO*

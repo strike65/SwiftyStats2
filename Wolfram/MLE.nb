@@ -1,0 +1,890 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     32677,        882]
+NotebookOptionsPosition[     31171,        856]
+NotebookOutlinePosition[     31568,        872]
+CellTagsIndexPosition[     31525,        869]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.9765415036227427`*^9, {3.976541816933085*^9, 3.976541836256318*^9}},
+ CellLabel->"In[29]:=",ExpressionUUID->"042c93a5-4448-44cb-a258-36c3d8d0e1bd"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"path", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"ParentDirectory", "[", 
+       RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+      ",", "\"\<Sources/SwiftyStatsDemo/TestFiles\>\""}], "}"}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.97663462031432*^9, 3.976634630718251*^9}, {
+   3.976867877122878*^9, 3.9768678802729397`*^9}, {3.9768712697062263`*^9, 
+   3.9768714546947107`*^9}, 3.9768715841406517`*^9, {3.976880151280531*^9, 
+   3.976880152226212*^9}},
+ CellLabel->"In[30]:=",ExpressionUUID->"f347bc8b-ee5e-46e0-a229-a7ebee51fff1"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-Laplace.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"LaplaceDistribution", "[", 
+     RowBox[{"\[Mu]", ",", "\[Beta]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"LaplaceDistribution", "[", 
+    RowBox[{
+     RowBox[{"\[Mu]", "/.", "est"}], ",", 
+     RowBox[{"\[Beta]", "/.", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976541197448421*^9, 3.976541223395398*^9}, {
+  3.976541292764934*^9, 3.976541294231992*^9}, {3.976541464004128*^9, 
+  3.976541471514606*^9}, {3.976542906103945*^9, 3.9765429108705*^9}, {
+  3.9765429469069138`*^9, 3.976542951238369*^9}, {3.976634646016595*^9, 
+  3.9766346896418858`*^9}, {3.9768714716146584`*^9, 3.976871567743178*^9}, {
+  3.976871597762197*^9, 3.976871598180982*^9}, {3.97687953458957*^9, 
+  3.976879549620325*^9}, {3.976880443834474*^9, 3.976880444477765*^9}, {
+  3.9768829281833763`*^9, 3.976882981823052*^9}, {3.976886313386592*^9, 
+  3.9768863188461313`*^9}, {3.976886509011305*^9, 3.976886516980929*^9}, {
+  3.9769463427502193`*^9, 3.976946365091186*^9}},
+ CellLabel->
+  "In[223]:=",ExpressionUUID->"6f003922-8fe3-492c-bd39-5b132aa5703e"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-beta.csv\>\""}], "}"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"BetaDistribution", "[", 
+     RowBox[{"\[Alpha]", ",", "\[Beta]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"BetaDistribution", "[", 
+    RowBox[{
+     RowBox[{"\[Alpha]", " ", "/.", "est"}], ",", " ", 
+     RowBox[{"\[Beta]", " ", "/.", " ", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976541534898869*^9, 3.976541567121798*^9}, {
+  3.97687162485564*^9, 3.976871637915039*^9}, {3.976880114588831*^9, 
+  3.976880115775978*^9}, {3.976880461695422*^9, 3.976880517304111*^9}, {
+  3.976880659364191*^9, 3.9768806657542677`*^9}, {3.9768807264043713`*^9, 
+  3.976880779272644*^9}, {3.9768808304250507`*^9, 3.976880852054431*^9}, {
+  3.9768809408435707`*^9, 3.9768810544683733`*^9}, {3.9768811131161423`*^9, 
+  3.976881168604958*^9}, {3.976881213097829*^9, 3.976881217584216*^9}, {
+  3.976881334409676*^9, 3.976881498151558*^9}, {3.976881553458912*^9, 
+  3.976881578072167*^9}, {3.976881624177249*^9, 3.976881645866069*^9}, {
+  3.976882552343667*^9, 3.9768827693929243`*^9}, {3.976882809969803*^9, 
+  3.9768828226767797`*^9}, {3.97688288634284*^9, 3.976882904625266*^9}, {
+  3.976882996838118*^9, 3.976882998828425*^9}, {3.976946373727297*^9, 
+  3.976946374760742*^9}},
+ CellLabel->
+  "In[233]:=",ExpressionUUID->"6d99818e-ec7f-46cb-9983-1219eb3cdf72"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-cauchy.csv\>\""}], "}"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"CauchyDistribution", "[", 
+     RowBox[{"\[Alpha]", ",", "\[Beta]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"CauchyDistribution", "[", 
+    RowBox[{
+     RowBox[{"\[Alpha]", " ", "/.", "est"}], ",", " ", 
+     RowBox[{"\[Beta]", " ", "/.", " ", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976883018223489*^9, 3.976883043149654*^9}, {
+  3.976883073259221*^9, 3.976883102431841*^9}, {3.976883177113406*^9, 
+  3.97688318485318*^9}, {3.976946380534791*^9, 3.976946381393235*^9}},
+ CellLabel->
+  "In[243]:=",ExpressionUUID->"be1e17d5-4743-4aa4-bfb4-ed9f9f508c63"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-exponential.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"ExponentialDistribution", "[", "\[Lambda]", "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"ExponentialDistribution", "[", 
+    RowBox[{"\[Lambda]", " ", "/.", "est"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976883216980248*^9, 3.9768832532104*^9}, {
+  3.976946386653755*^9, 3.976946387722288*^9}},
+ CellLabel->
+  "In[253]:=",ExpressionUUID->"35d28a4a-f35d-485b-bc66-16beb2decaf5"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-gamma.csv\>\""}], "}"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"GammaDistribution", "[", 
+     RowBox[{"k", ",", "\[Theta]"}], "]"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"GammaDistribution", "[", 
+    RowBox[{
+     RowBox[{"k", " ", "/.", "est"}], ",", 
+     RowBox[{"\[Theta]", " ", "/.", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.9768859912765417`*^9, 3.976886006001556*^9}, {
+  3.976886049475432*^9, 3.9768861264941683`*^9}, {3.976946391384797*^9, 
+  3.976946392475078*^9}},
+ CellLabel->
+  "In[263]:=",ExpressionUUID->"49f1c7e6-e29b-40bb-b0b3-57d160d8400e"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-inverseGamma.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"InverseGammaDistribution", "[", 
+     RowBox[{"k", ",", "\[Theta]"}], "]"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"InverseGammaDistribution", "[", 
+    RowBox[{
+     RowBox[{"k", " ", "/.", "est"}], ",", 
+     RowBox[{"\[Theta]", " ", "/.", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.9768862133890657`*^9, 3.976886218474491*^9}, {
+  3.9768863870379763`*^9, 3.97688640415915*^9}, {3.976886445052473*^9, 
+  3.976886446053234*^9}, {3.976946400338476*^9, 3.976946401551486*^9}},
+ CellLabel->
+  "In[273]:=",ExpressionUUID->"d88946db-bf0f-48ba-93f8-e12512bd58c3"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-logistic.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"LogisticDistribution", "[", 
+     RowBox[{"\[Mu]", ",", "\[Beta]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"LogisticDistribution", "[", 
+    RowBox[{
+     RowBox[{"\[Mu]", " ", "/.", "est"}], ",", 
+     RowBox[{"\[Beta]", " ", "/.", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976945313889484*^9, 3.976945368152513*^9}, {
+  3.976946405410837*^9, 3.97694640663482*^9}},
+ CellLabel->
+  "In[283]:=",ExpressionUUID->"710ef10c-5a4d-4913-a497-d5aa604aa43c"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-nc-beta.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"NoncentralBetaDistribution", "[", 
+     RowBox[{"\[Alpha]", ",", "\[Beta]", ",", "\[Lambda]"}], "]"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"NoncentralBetaDistribution", "[", 
+    RowBox[{
+     RowBox[{"\[Alpha]", " ", "/.", "est"}], ",", 
+     RowBox[{"\[Beta]", " ", "/.", "est"}], ",", " ", 
+     RowBox[{"\[Lambda]", " ", "/.", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976945484660618*^9, 3.976945592001083*^9}, {
+  3.976946299473606*^9, 3.97694630068578*^9}, {3.976946333078002*^9, 
+  3.976946337337564*^9}, {3.9769464159397573`*^9, 3.9769464232917423`*^9}},
+ CellLabel->
+  "In[293]:=",ExpressionUUID->"b45368da-0209-495f-980e-913fd44db577"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-nc-chiSquare.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"NoncentralChiSquareDistribution", "[", 
+     RowBox[{"\[Nu]", ",", "\[Lambda]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"NoncentralChiSquareDistribution", "[", 
+    RowBox[{
+     RowBox[{"\[Nu]", " ", "/.", "est"}], ",", " ", 
+     RowBox[{"\[Lambda]", " ", "/.", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976945673252297*^9, 3.976945738141199*^9}, {
+  3.976946432867343*^9, 3.9769464341897593`*^9}},
+ CellLabel->
+  "In[303]:=",ExpressionUUID->"02d47e87-3356-49e0-a70f-bb22e954e65a"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-nc-fisher.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"NoncentralFRatioDistribution", "[", 
+     RowBox[{"8", ",", " ", "16", ",", "\[Lambda]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"NoncentralFRatioDistribution", "[", 
+    RowBox[{"8", ",", "16", ",", " ", 
+     RowBox[{"\[Lambda]", " ", "/.", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976945850028474*^9, 3.97694591789248*^9}, {
+  3.976945954065207*^9, 3.976945990359748*^9}, {3.976946438598423*^9, 
+  3.976946439695464*^9}},
+ CellLabel->
+  "In[313]:=",ExpressionUUID->"ba5ccbc0-d8be-4446-8afc-6acc94906397"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"fileName", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"path", ",", "\"\<RND-nc-student.csv\>\""}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Import", "[", "fileName", "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"edist", "=", 
+   RowBox[{"EmpiricalDistribution", "[", "data", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"est", "=", 
+  RowBox[{"FindDistributionParameters", "[", 
+   RowBox[{"data", ",", " ", 
+    RowBox[{"NoncentralStudentTDistribution", "[", 
+     RowBox[{"9", ",", "\[Delta]"}], "]"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dist", "=", 
+   RowBox[{"NoncentralStudentTDistribution", "[", 
+    RowBox[{"9", ",", 
+     RowBox[{"\[Delta]", " ", "/.", " ", "est"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"xmin", ",", "xmax"}], "}"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Min", "[", "data", "]"}], ",", 
+     RowBox[{"Max", "[", "data", "]"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pad", "=", 
+   RowBox[{"0.05", " ", 
+    RowBox[{"(", 
+     RowBox[{"xmax", "-", "xmin"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"kde", "=", 
+   RowBox[{"DiscretePlot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"edist", ",", " ", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", " ", "data"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fit", "=", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"CDF", "[", 
+      RowBox[{"dist", ",", "x"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"xmin", "-", "pad"}], ",", 
+       RowBox[{"xmax", "+", "pad"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "->", "All"}], ",", 
+     RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"kde", ",", "fit", ",", 
+   RowBox[{"Frame", "->", "True"}], ",", 
+   RowBox[{"FrameLabel", "->", 
+    RowBox[{"{", 
+     RowBox[{"\"\<x\>\"", ",", "\"\<Density\>\""}], "}"}]}], ",", 
+   RowBox[{"PlotLabel", "->", "\"\<Data and estimated dist\>\""}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.976946058183548*^9, 3.976946121440729*^9}, {
+  3.976946443970214*^9, 3.976946444748087*^9}},
+ CellLabel->
+  "In[323]:=",ExpressionUUID->"0f1cb7a0-ad7b-4e9a-b9ab-b914816a253d"]
+},
+WindowSize->{1427, 911},
+WindowMargins->{{-1860, Automatic}, {133, Automatic}},
+FrontEndVersion->"14.3 for Mac OS X ARM (64-bit) (July 8, 2025)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"a8b78ead-51d1-4548-a448-fcc40ebdb1aa"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[554, 20, 266, 5, 36, "Input",ExpressionUUID->"042c93a5-4448-44cb-a258-36c3d8d0e1bd"],
+Cell[823, 27, 625, 14, 36, "Input",ExpressionUUID->"f347bc8b-ee5e-46e0-a229-a7ebee51fff1"],
+Cell[1451, 43, 3107, 78, 266, "Input",ExpressionUUID->"6f003922-8fe3-492c-bd39-5b132aa5703e"],
+Cell[4561, 123, 3319, 80, 266, "Input",ExpressionUUID->"6d99818e-ec7f-46cb-9983-1219eb3cdf72"],
+Cell[7883, 205, 2636, 70, 266, "Input",ExpressionUUID->"be1e17d5-4743-4aa4-bfb4-ed9f9f508c63"],
+Cell[10522, 277, 2452, 67, 266, "Input",ExpressionUUID->"35d28a4a-f35d-485b-bc66-16beb2decaf5"],
+Cell[12977, 346, 2574, 71, 266, "Input",ExpressionUUID->"49f1c7e6-e29b-40bb-b0b3-57d160d8400e"],
+Cell[15554, 419, 2643, 72, 266, "Input",ExpressionUUID->"d88946db-bf0f-48ba-93f8-e12512bd58c3"],
+Cell[18200, 493, 2534, 70, 266, "Input",ExpressionUUID->"710ef10c-5a4d-4913-a497-d5aa604aa43c"],
+Cell[20737, 565, 2729, 73, 266, "Input",ExpressionUUID->"b45368da-0209-495f-980e-913fd44db577"],
+Cell[23469, 640, 2572, 70, 266, "Input",ExpressionUUID->"02d47e87-3356-49e0-a70f-bb22e954e65a"],
+Cell[26044, 712, 2594, 70, 266, "Input",ExpressionUUID->"ba5ccbc0-d8be-4446-8afc-6acc94906397"],
+Cell[28641, 784, 2526, 70, 266, "Input",ExpressionUUID->"0f1cb7a0-ad7b-4e9a-b9ab-b914816a253d"]
+}
+]
+*)
+
