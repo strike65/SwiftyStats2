@@ -4,7 +4,7 @@ SwiftyStats is a Swift Package that delivers a concurrency-safe toolkit for insp
 
 ## Release Status
 
-SwiftPM versions are published via git tags. Replace `2.0.0` with the tag you want to depend on; if you are preparing a release, ensure `CHANGELOG.md` has a matching entry.
+SwiftPM versions are published via git tags. Replace `2.0.1` with the tag you want to depend on; if you are preparing a release, ensure `CHANGELOG.md` has a matching entry.
 
 ## Features
 
@@ -34,7 +34,7 @@ SwiftPM versions are published via git tags. Replace `2.0.0` with the tag you wa
 Add SwiftyStats to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/volker/SwiftyStatsGH.git", from: "2.0.0")
+.package(url: "https://github.com/volker/SwiftyStatsGH.git", from: "2.0.1")
 ```
 
 Then add `SwiftyStats` to your target dependencies.

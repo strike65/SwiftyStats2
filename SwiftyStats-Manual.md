@@ -45,7 +45,7 @@ let package = Package(
         .library(name: "MyApp", targets: ["MyApp"])
     ],
     dependencies: [
-        .package(url: "https://github.com/volker/SwiftyStatsGH.git", from: "2.0.0")
+        .package(url: "https://github.com/volker/SwiftyStatsGH.git", from: "2.0.1")
     ],
     targets: [
         .target(name: "MyApp", dependencies: [
