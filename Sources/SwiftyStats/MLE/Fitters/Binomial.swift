@@ -36,7 +36,7 @@ extension MLEFitter {
     /// - Parameters:
     ///   - data: The observed counts of successes. Each `x` in `data` must satisfy `0 ≤ x ≤ n`.
     ///   - nInt: The fixed number of trials per observation (non-negative integer).
-    ///   - optimizer: Optimizer to use. Defaults to `.nelderMead`. See `NelderMeadOptions`.
+    ///   - optimizer: Optimizer to use. Defaults to `.nelderMead`. See `MLEOptimizationOpts`.
     ///   - options: Optional optimizer configuration. When provided, `computeCovariance` is
     ///              forced to `true` so that standard errors can be derived from the Hessian.
     ///

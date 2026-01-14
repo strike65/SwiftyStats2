@@ -83,7 +83,7 @@ import SwiftyStatsPrelude
 /// - See Also:
 ///   - ``RealLike``
 ///   - ``MLEResult``
-///   - ``NelderMeadOptions``
+///   - ``MLEOptimizationOpts``
 ///   - ``OptimizerKind``
 ///
 /// - Note:

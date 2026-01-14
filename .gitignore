@@ -1,94 +1,94 @@
-.DS_Store
-/.build
-/Packages
-xcuserdata/
-DerivedData/
-.swiftpm/configuration/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-.netrc
-Docs/
-boostcl/
-TODO.txt
-DistTemplate.txt
-.home/
-KS-OPT.md
-## OS
+# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
 Icon?
-node_modules*
-## Archives & binaries
+
+# Xcode
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.xcuserdatad
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# SwiftPM / build artefacts
+.build/
+build/
+Products/
+ModuleCache.noindex/
+.clang-module-cache/
+.swift-module-cache/
+.swiftpm
+docs/
+*.resolved
+package*.*
+
+# Dependency managers
+/Packages/
+Pods/
+Carthage/Build/
+Carthage/Checkouts/
+node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+entropy_results.json
+
+# Documentation outputs
+docs/docsets/**/*.tgz
+docs/docsets/**/*.docset
+docs/undocumented.json
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+
+# Archives and binaries
 *.zip
-*.pdf
+*.tgz
 *.dSYM
 *.ipa
 *.app
 *.framework
 *.xcarchive
-session.log
-changelog.temp.txt
-transscript.txt
-*.json
-.swift-module-cache/
-tmp*.swift
-## Editors/IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-./home
-## Swift Package Manager
-/.build
-/.swiftpm/
-/Packages
-Package.resolved
 
-## Xcode
-*.xccheckout
-*.xcscmblueprint
-*.moved-aside
-*.xcuserstate
-*.xcuserdatad
-*.xcworkspace/xcuserdata/
-*.xcodeproj/project.xcworkspace/xcuserdata/
-DerivedData/
-.clang-module-cache/
-changelog.temp.txt
-
-## Local build dirs
-/build/
-/Products/
-SwiftyStats/build/
-.build
-.clang-module-cache/
-ModuleCache.noindex/
-
-## Dependency managers
-Pods/
-Carthage/Build/
-Carthage/Checkouts/
-
-## Docs/tool outputs (regenerate locally)
-docs/docsets/**/*.tgz
-docs/docsets/**/*.docset
-docs/undocumented.json
-
-## Logs and temp files
-*.log
-*.tmp
-*.temp
-
-## Secrets (security)
+# Secrets
 .env
 .env.*
+.envrc
+.netrc
+.git-credentials
+.npmrc
+.yarnrc
+.yarnrc.yml
 *.key
 *.pem
 *.p12
+*.pfx
+*.jks
+*.keystore
+*.der
+*.crt
 *.cer
+*.csr
 *.mobileprovision
 *.credentials
 *.secret
 secrets/
 credentials/
-TODO*
+.venv
+
+# Local workspace
+.home/
+AGENTS.md
+AGENTS/

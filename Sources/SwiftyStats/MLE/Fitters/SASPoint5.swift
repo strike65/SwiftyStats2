@@ -34,7 +34,7 @@ extension MLEFitter {
     /// - Parameters:
     ///   - data: Sample values. Must be non-empty and nonnegative.
     ///   - options: Optional optimizer options (unused for analytic fits).
-    ///   - optimizer: ``OptimzerKind`` setting (defaults to ``OptimizerKind.lbfgs``
+    ///   - optimizer: ``OptimizerKind`` setting (defaults to ``OptimizerKind.lbfgs``).
     /// - Returns: `MLEResult` with `thetaHat = [v̂]` where `v̂ = (1/(2n)) * Σ x_i²` (the variance-like parameterization).
     /// - Precondition: `!data.isEmpty && data.allSatisfy { $0 >= 0 }`.
     /// - Note: If any `x_i == 0` or `Σ x_i² == 0`, the likelihood can be unbounded; returns `logLik = -∞` accordingly.

@@ -9,17 +9,20 @@ SwiftPM versions are published via git tags. Replace `2.0.0` with the tag you wa
 ## Features
 
 - Thread-safe sample container (`SSExamine`) with raw-order reconstruction, frequency tables, and Codable support.
-- Convenience APIs for appending arrays or text, filtering by character sets, and computing cumulative frequencies.
+- `SSDataFrame` for lightweight tabular storage with JSON persistence and optional ZIP compression.
+- Inferential tests (parametric, non-parametric, variance, and outlier checks) under `Inferential`.
+- MLE fitters and a shared solver for common distributions, with analytic and numerical options.
+- Time series smoothing, autocorrelation, and exact Durbin-Watson helpers.
 - Integration with [SwiftyBoost](https://github.com/strike65/SwiftyBoost.git) for advanced numeric routines.
-- Ready-to-run demo executable for smoke testing and experimentation.
-- Comprehensive Swift Testing suite covering concurrency, encoding, and frequency table semantics.
+- Ready-to-run demo executable plus a Swift Testing suite covering SSExamine, MLE, and time series helpers.
 
 ## Modules
 
-- `SSExamine`: exploratory statistics and derived measures for univariate samples.
+- `SSExamine`: exploratory statistics, entropy, frequency tables, and `SSDataFrame` utilities.
 - `Inferential`: hypothesis tests (parametric, non-parametric, goodness-of-fit, outliers, variance tests).
-- `MLE`: maximum-likelihood fitters and a generic solver (`MLEProblem`, `MLESolver`, `MLEFitter`).
-- `TimeSeries`: smoothing, autocorrelation helpers, and optional plotting utilities.
+- `MLE`: maximum-likelihood fitters (`MLEFitter`) plus an internal solver (`MLEProblem`, `MLESolver`).
+- `TimeSeries`: smoothing, autocorrelation, and Durbin-Watson helpers.
+- `LinearModel`: minimal OLS helper via `GLMFit.fit`.
 
 ## Requirements
 
@@ -89,7 +92,7 @@ make clean        # swift package clean
 
 - Generate static docs with `make doc`; the site is written to `docs/`. The hosting base path is configured via `HOSTING_BASE_PATH` in `Makefile` and should match your GitHub Pages project name.
 - Publish by committing `docs/` and enabling GitHub Pages for the `main/docs` source, or preview locally with `python3 -m http.server --directory docs 8000`.
-- Task-oriented references live in `SwiftyStats-Manual.md` and `Using-MLE.md`, while DocC articles sit under `Sources/SwiftyStats/SwiftyStats.docc`.
+- Task-oriented references live in `SwiftyStats-Manual.md` and `Using-MLE.md`, while DocC output is generated from symbol documentation under `Sources/SwiftyStats`.
 
 ## Testing
 
@@ -105,6 +108,6 @@ make test
 
 Issues and pull requests are welcome. Please include relevant tests and follow the Swift API Design Guidelines described in the project documentation.
 
-## License
+## Licence
 
 SwiftyStats is available under the MIT Licence. See [LICENSE.md](LICENSE.md) for details.

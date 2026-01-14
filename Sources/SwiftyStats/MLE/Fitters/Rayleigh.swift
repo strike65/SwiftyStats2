@@ -34,8 +34,8 @@ extension MLEFitter {
     ///
     /// - Parameters:
     ///   - data: Sample values. Must be non-empty and nonnegative.
-    ///   - optimizer: ``OptimzerKind`` setting (defaults to ``OptimizerKind.lbfgs``
-    ///   - options: An optional ``NelderMeadOptions`` struct.
+    ///   - optimizer: ``OptimizerKind`` setting (defaults to ``OptimizerKind.lbfgs``).
+    ///   - options: An optional ``MLEOptimizationOpts`` struct.
     /// - Returns: `MLEResult` with `thetaHat = [v̂]`.
     /// - Precondition: `!data.isEmpty && data.allSatisfy { $0 >= 0 }`.
     /// - Note: Degenerate samples with `Σ x_i² == 0` return `logLik = -∞` and `converged = false`.

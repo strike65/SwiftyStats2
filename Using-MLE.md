@@ -1,6 +1,6 @@
 # Maximum Likelihood Estimation with the Transformed-Parameter Solver
 
-This guide explains how to define and solve MLE problems with the transformed-parameter solver used inside SwiftyStats, how to choose optimizers and configure multi-start/warm-start, how to provide gradients, and how to interpret results. The solver types (`MLEProblem`, `MLESolver`, `ParamSpec`, `ParamConstraint`) are internal to SwiftyStats and are not exported. External users should use `MLEFitter` and `NelderMeadOptions` instead.
+This guide explains how to define and solve MLE problems with the transformed-parameter solver used inside SwiftyStats, how to choose optimizers and configure multi-start/warm-start, how to provide gradients, and how to interpret results. The solver types (`MLEProblem`, `MLESolver`, `ParamSpec`, `ParamConstraint`) are internal to SwiftyStats and are not exported. External users should use `MLEFitter` with `MLEOptimizationOpts` and `OptimizerKind` instead. Sections that use `MLEProblem` or `ParamSpec` only build inside the SwiftyStats package (or a fork), because those types and `SwiftyStatsPrelude` are internal.
 
 Public API quick start:
 
@@ -19,9 +19,9 @@ print(result.thetaHat, result.logLik)
 - What this is
   - A generic, transform-based maximum likelihood solver that operates in an unconstrained parameter space u and maps smoothly to your constrained model parameters θ. This lets you fit models with positivity, interval, and other constraints without manual reparameterization.
 
-- Core pieces you’ll use inside the SwiftyStats module
+- Core pieces used inside the SwiftyStats module (internal types)
   - MLEProblem<T>: Defines your data, a per-observation log-pdf logpdf(x, θ), an optional per-observation gradient gradlogpdf(x, θ), and parameter specifications (constraints + initial values).
-  - NelderMeadOptions<T>: All solver options (optimizer choice, tolerances, line search, Hessian/covariance, multi-start/warm-start/diagnostics).
+  - MLEOptimizationOpts<T>: All solver options (optimizer choice, tolerances, line search, Hessian/covariance, multi-start/warm-start/diagnostics).
   - MLESolver.fit(_:options:): The entry point that returns MLEResult<T> with θ̂, log-likelihood, diagnostics, and (optionally) a covariance matrix.
 
 - Supported numeric types
@@ -59,6 +59,8 @@ print(result.thetaHat, result.logLik)
   - logpdf: (x: T, theta: [T]) -> T — per-observation log density/mass
   - gradlogpdf (optional): (x: T, theta: [T]) -> [T] — per-observation gradient with respect to θ
   - paramSpecs: [ParamSpec<T>] — one per parameter, with constraint and initial value (and an initial step in u)
+
+Note: The examples in this section require working inside the SwiftyStats package so that `SwiftyStatsPrelude` is available.
 
 Example: A custom two-parameter model
 
@@ -140,7 +142,7 @@ let poissonSpecs = problem.makeParamSpecs(for: .poisson, data: x, ctx: blank)
 
 Example: Basic Nelder–Mead fit
 ```swift
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .nelderMead
 opt.maxIter = 10_000
 opt.diagnosticsEnabled = true
@@ -174,7 +176,7 @@ if let cov = result.cov { print("Covariance:", cov) }
 
 Example: BFGS with line search
 ```swift
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .bfgs
 opt.tolGrad = 1e-6
 opt.relTolLogLik = 1e-8
@@ -205,7 +207,7 @@ let res = MLESolver<Double>.fit(problem, options: opt)
 
 Example: Multi-start L-BFGS with warm-start
 ```swift
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .lbfgs
 opt.multiStartCount = 8
 opt.multiStartDesign = .lhs
@@ -300,7 +302,7 @@ func logpmfPoisson(_ x: Double, _ theta: [Double]) -> Double {
 let specs = [ParamSpec<Double>(.positive, initial: max(x.reduce(0,+)/Double(x.count), 1e-9))]
 let prob = MLEProblem<Double>(data: x, logpdf: logpmfPoisson, paramSpecs: specs)
 
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .nelderMead
 opt.computeCovariance = true
 
@@ -328,7 +330,7 @@ func logpdfBeta(_ x: Double, _ theta: [Double]) -> Double {
 
 let problem = MLEProblem<Double>(data: x, logpdf: logpdfBeta, paramSpecs: specs)
 
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .lbfgs
 opt.multiStartCount = 6
 opt.diagnosticsEnabled = true
@@ -360,7 +362,7 @@ let specs = dummy.makeParamSpecs(for: .binomial, data: counts, ctx: ctx)
 
 let prob = MLEProblem<Double>(data: counts, logpdf: logpmfBinomial, paramSpecs: specs)
 
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .bfgs
 opt.computeCovariance = true
 
@@ -392,7 +394,7 @@ let specs = dummy.makeParamSpecs(for: .gpd, data: exceedances, ctx: ctx)
 
 let prob = MLEProblem<Double>(data: exceedances, logpdf: logpdfGPD, paramSpecs: specs)
 
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .lbfgs
 opt.multiStartCount = 8
 opt.computeCovariance = true
@@ -441,7 +443,7 @@ let problem = MLEProblem<Double>(
     paramSpecs: specs
 )
 
-var opt = NelderMeadOptions<Double>()
+var opt = MLEOptimizationOpts<Double>()
 opt.optimizer = .bfgs
 opt.computeCovariance = true
 
@@ -495,7 +497,7 @@ func fitNormal(_ data: [Double]) -> [Double] {
         },
         paramSpecs: specs
     )
-    var opt = NelderMeadOptions<Double>()
+    var opt = MLEOptimizationOpts<Double>()
     opt.optimizer = .bfgs
     let result = MLESolver<Double>.fit(problem, options: opt)
     return result.thetaHat
@@ -582,7 +584,7 @@ struct PoissonMLETests {
 
         let prob = MLEProblem<Double>(data: x, logpdf: logpmfPoisson, paramSpecs: specs)
 
-        var opt = NelderMeadOptions<Double>()
+        var opt = MLEOptimizationOpts<Double>()
         opt.optimizer = .nelderMead
 
         let res = MLESolver<Double>.fit(prob, options: opt)
@@ -594,7 +596,30 @@ struct PoissonMLETests {
 
 ---
 
-## 16. API Summary (What You’ll Typically Touch)
+## 16. API Summary (What You Will Typically Touch)
+
+### External (public)
+
+- MLEFitter<T>
+   - fit... methods such as fitGamma, fitNormal, fitPoisson, fitBinomial
+
+- MLEOptimizationOpts<T>
+   - optimizer: .nelderMead | .bfgs | .lbfgs
+   - maxIter, relTolLogLik, tolGrad, tolStep, lineSearchC1, lineSearchTau, gradStep, lbfgsMemory
+   - enableNewtonRefinement, newtonInitialDamping
+   - computeCovariance, hessianStep
+   - multiStartCount, multiStartDesign, warmStartTheta, randomRestartCount, multiStartURadius, multiStartLogScale, gridPointsPerDim
+   - enableParallelStarts (default true) to fan out multi-start solves with Swift Concurrency on supported Apple platforms
+   - diagnosticsEnabled, uniquenessTolTheta
+
+- OptimizerKind
+   - .nelderMead | .bfgs | .lbfgs
+
+- MLEResult<T>
+   - thetaHat, logLik, iterations, converged, nEval, cov
+   - allSolutions, uniqueSolutionCount, uniqueSolutionCountTheta, gradientNormAtOpt, hessianPositiveDefinite, conditionNumberEstimateHu/conditionSource, convergenceReason
+
+### Internal (within SwiftyStats)
 
 - MLEProblem<T>
    - init(data: [T], logpdf: (T, [T]) -> T, gradlogpdf: ((T, [T]) -> [T])? = nil, paramSpecs: [ParamSpec<T>])
@@ -604,21 +629,8 @@ struct PoissonMLETests {
    - init(_ constraint: ParamConstraint<T>, initial: T, step: T = 0.2)
    - Constraints: .real, .positive, .unitInterval, .lowerBound(a), .upperBound(b), .interval(a,b)
 
-- NelderMeadOptions<T>
-   - optimizer: .nelderMead | .bfgs | .lbfgs
-   - maxIter, relTolLogLik, tolGrad, tolStep, lineSearchC1, lineSearchTau, gradStep, lbfgsMemory
-   - enableNewtonRefinement, newtonInitialDamping
-   - computeCovariance, hessianStep
-   - multiStartCount, multiStartDesign, warmStartTheta, randomRestartCount, multiStartURadius, multiStartLogScale, gridPointsPerDim
-   - enableParallelStarts (default true) to fan out multi-start solves with Swift Concurrency on supported Apple platforms
-   - diagnosticsEnabled, uniquenessTolTheta
-
 - MLESolver<T>
-   - static func fit(_ problem: MLEProblem<T>, options: NelderMeadOptions<T> = .init()) -> MLEResult<T>
-
-- MLEResult<T>
-   - thetaHat, logLik, iterations, converged, nEval, cov
-   - allSolutions, uniqueSolutionCount, uniqueSolutionCountTheta, gradientNormAtOpt, hessianPositiveDefinite, conditionNumberEstimateHu/conditionSource, convergenceReason
+   - static func fit(_ problem: MLEProblem<T>, options: MLEOptimizationOpts<T> = .init()) -> MLEResult<T>
 
 ---
 
