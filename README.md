@@ -1,6 +1,6 @@
 # SwiftyStats
 
-SwiftyStats is a Swift Package that delivers a concurrency-safe toolkit for inspecting univariate samples - making haeavy use of generics. The core `SSExamine` type tracks raw insertion order, absolute and relative frequencies, and produces cumulative views, making it useful for exploratory statistics in apps, scripts, or server tooling. A lightweight CLI (`swiftystats-demo`) ships with the package for quick experimentation.
+SwiftyStats is a Swift Package that delivers a concurrency-safe toolkit for inspecting univariate samples - making heavy use of generics. The core `SSExamine` type tracks raw insertion order, absolute and relative frequencies, and produces cumulative views, making it useful for exploratory statistics in apps, scripts, or server tooling. A lightweight CLI (`swiftystats-demo`) ships with the package for quick experimentation.
 
 ## Release Status
 
