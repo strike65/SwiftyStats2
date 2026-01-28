@@ -57,11 +57,11 @@ let globalSeed: UInt64 = 0x5EED_5EED
 /// Entry point wiring the enabled demo routines.
 private func runAllDemos() {
     demoMLEAll()
-    demoFileManagement()
-    demoBasicsWithSSExamine()
-    demoZarrStatsAndQuantiles()
+//    demoFileManagement()
+//    demoBasicsWithSSExamine()
+//    demoZarrStatsAndQuantiles()
     demoOutliersAndEntropy()
-    smokeTests()
+//    smokeTests()
 }
 
 runAllDemos()
@@ -270,10 +270,10 @@ private func demoOutliersAndEntropy() {
     kv("Rosner ESD", esdTest)
 
     section("Entropy")
-    kv("Shannon (histogram)", rosnerEx.shannonEntropy(type: .histogram))
-    kv("Shannon (discrete)", rosnerEx.shannonEntropy(type: .discrete))
-    kv("Shannon (frequency)", rosnerEx.shannonEntropy(type: .frequency))
-    kv("Shannon (kde,bw=2.0)", rosnerEx.shannonEntropy(type: .kde(bandwidth: 2.0)))
+    kv("Shannon (histogram)", rosnerEx.shannonEntropy(type: .histogram, base: Double.exp(1), bins: .auto))
+    kv("Shannon (discrete)", rosnerEx.shannonEntropy(type: .discrete, base: Double.exp(1)))
+    kv("Shannon (frequency)", rosnerEx.shannonEntropy(type: .frequency, base: Double.exp(1)))
+    kv("Shannon (kde,bw=2.0)", rosnerEx.shannonEntropy(type: .kde(bandwidth: 2.0), base: Double.exp(1)))
     kv("Shannon (Miller-Madow, base 2, Sturges)", rosnerEx.shannonEntropy(type: .millerMadow, base: 2, bins: .sturges))
     kv("Renyi alpha=0.05, base 2", rosnerEx.renyiEntropy(alpha: 0.05, base: 2))
 
@@ -281,7 +281,8 @@ private func demoOutliersAndEntropy() {
     let string: String = "ABCEDEFS#X"
     let string1 = "ABCEDEFS#X4e"
     let stringEx : SSExamine<String, Double> = try! SSExamine<String, Double>(using: string, levelOfMeasurement: .nominal, name: nil, characterSet: .letters)
-    kv("Shannon (histogram)", stringEx.shannonEntropy(type: .histogram))
+    kv("Shannon (histogram)", stringEx.shannonEntropy(type: .histogram, base: Double.exp(1)))
+    kv("Shannon (discrete)", stringEx.shannonEntropy(type: .discrete, base: Double.exp(1)))
     kv("Complexity measures", stringEx.complexityMeasures())
     kv("Entropy profile", stringEx.computeEntropyProfile())
     let stringEx1 : SSExamine<String, Double> = try! SSExamine<String, Double>(using: string1, levelOfMeasurement: .nominal, name: nil, characterSet: .letters)
@@ -323,577 +324,602 @@ private func demoMLEQuickStart() {
 private func demoMLEAll() {
     banner("MLE demos (comprehensive)")
     // Exponential (analytic)
+//    do {
+//        let rate = 2.5
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-exponential.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let dd = dataEx.itemsAsNumericArray {
+//                data = dd
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .exponential(rate: rate), seed: globalSeed)
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .exponential(rate: rate), seed: globalSeed)
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "exponential")
+//        }
+//        let r = MLEFitter<Double>.fitExponential(data: data)
+//        print("#############################\nDistribution: Exponential(rate)")
+//        print("thetaHat =", r.thetaHat, " (true [rate=\(rate)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Rayleigh (sigma): derive from U(0,1) using R = sigma sqrt(-2 ln U)
+//    do {
+//        let sigma = 1.2
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-rayleigh.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//                data = u.map { sigma * sqrt(-2.0 * log(max($0, .leastNonzeroMagnitude))) }
+//            }
+//        }
+//        else {
+//            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//            data = u.map { sigma * sqrt(-2.0 * log(max($0, .leastNonzeroMagnitude))) }
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "rayleigh")
+//        }
+//        let r = MLEFitter<Double>.fitRayleigh(data: data)
+//        print("#############################\nDistribution: Rayleigh")
+//        print("thetaHat =", r.thetaHat, " (true [sigma=\(sigma), sigma^2=\(sigma * sigma)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//
+//    }
+//
+//    // Laplace(mu, b): derive from U(0,1)
+//    do {
+//        let mu = -10.0, b = 3.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-Laplace.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//                let centered = u.map { $0 - 0.5 }
+//                data = centered.map { t -> Double in
+//                    mu - b * (t >= 0 ? 1 : -1) * log(1 - 2 * abs(t))
+//                }
+//            }
+//        }
+//        else {
+//            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//            let centered = u.map { $0 - 0.5 }
+//            data = centered.map { t -> Double in
+//                mu - b * (t >= 0 ? 1 : -1) * log(1 - 2 * abs(t))
+//            }
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "Laplace")
+//        }
+//        let r = MLEFitter<Double>.fitLaplace(data: data)
+//        print("#############################\nDistribution: Laplace")
+//        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), b=\(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Uniform(a, b): derive from U(0,1)
+//    do {
+//        let a = -2.0, b = 5.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-Uniform.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//                data = u.map { a + (b - a) * $0 }
+//            }
+//        }
+//        else {
+//            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//            data = u.map { a + (b - a) * $0 }
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "Uniform")
+//        }
+//        let r = MLEFitter<Double>.fitUniform(data: data)
+//        print("#############################\nDistribution: Uniform")
+//        print("thetaHat =", r.thetaHat, " (true [\(a), \(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Wald (Inverse Gaussian): use normals and uniforms via randoms
+//    do {
+//        let mu = 1.0, lambda = 2.5
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-Wald.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                let z = RNGSampler<Double>.randoms(n: 10_000, dist: .gaussian(mean: 0, standardDeviation: 1), seed: globalSeed)
+//                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//                data = zip(z, u).map { (zVal, uVal) -> Double in
+//                    let y = zVal * zVal
+//                    let muOverLam = mu / lambda
+//                    let term = mu + (mu * mu * y) * 0.5 * (1.0 / lambda) - (muOverLam * 0.5) * sqrt(4 * mu * lambda * y + mu * mu * y * y)
+//                    return (uVal <= mu / (mu + term)) ? term : (mu * mu / term)
+//                }
+//            }
+//        }
+//        else {
+//            let z = RNGSampler<Double>.randoms(n: 10_000, dist: .gaussian(mean: 0, standardDeviation: 1), seed: globalSeed)
+//            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
+//            data = zip(z, u).map { (zVal, uVal) -> Double in
+//                let y = zVal * zVal
+//                let muOverLam = mu / lambda
+//                let term = mu + (mu * mu * y) * 0.5 * (1.0 / lambda) - (muOverLam * 0.5) * sqrt(4 * mu * lambda * y + mu * mu * y * y)
+//                return (uVal <= mu / (mu + term)) ? term : (mu * mu / term)
+//            }
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "Wald")
+//        }
+//        let r = MLEFitter<Double>.fitWald(data: data)
+//        print("#############################\nDistribution: Wald (Inverse Gaussian)")
+//        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Arcsine(a, b)
+//    do {
+//        let a = -1.5, b = 2.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-ArcSine.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data  = RNGSampler<Double>.randoms(n: 10_000, dist: .arcsine(a: a, b: b))
+//            }
+//        }
+//        else {
+//            data  = RNGSampler<Double>.randoms(n: 10_000, dist: .arcsine(a: a, b: b))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "ArcSine")
+//        }
+//        let r = MLEFitter<Double>.fitArcsine(data: data)
+//        print("#############################\nDistribution: Arcsine")
+//        print("thetaHat =", r.thetaHat, " (true [a=\(a), b=\(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Beta(alpha, beta)
+//    do {
+//        let a = 2.2, b = 0.6
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-beta.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .beta(a: a, b: b))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .beta(a: a, b: b))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "beta")
+//        }
+//        let r = MLEFitter<Double>.fitBeta(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.central, seed: 0x00BA_DA55)
+//        )
+//        print("#############################\nDistribution: Beta")
+//        print("thetaHat =", r.thetaHat, " (true [alpha=\(a), beta=\(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Gamma(k, theta)
+//    do {
+//        let k = 2.0, th = 1.35
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-gamma.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 1000, dist: .gamma(shape: k, scale: th))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 1000, dist: .gamma(shape: k, scale: th))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "gamma")
+//        }
+//        let r = MLEFitter<Double>.fitGamma(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.central, seed: 0xFACE_B00C)
+//        )
+//        print("#############################\nDistribution: Gamma")
+//        print("thetaHat =", r.thetaHat, " (true [k=\(k), theta=\(th)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Weibull(k, lambda)
+//    do {
+//        let k = 1.4, lambda = 0.9
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-weibull.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .weibull(k: k, lambda: lambda))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .weibull(k: k, lambda: lambda))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "weibull")
+//        }
+//        let r = MLEFitter<Double>.fitWeibull(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.central, seed: 0xDEAD_C0DE)
+//        )
+//        print("#############################\nDistribution: Weibull")
+//        print("thetaHat =", r.thetaHat, " (true [k=\(k), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Cauchy(mu, gamma)
+//    do {
+//        let mu = 0.3, gamma = 1.1
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-cauchy.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .cauchy(mu: mu, gamma: gamma))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .cauchy(mu: mu, gamma: gamma))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "cauchy")
+//        }
+//        let r = MLEFitter<Double>.fitCauchy(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.heavyTail, seed: 0xC0C0_A)
+//        )
+//        print("#############################\nDistribution: Cauchy")
+//        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), gamma=\(gamma)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Logistic(mu, s)
+//    do {
+//        let mu = -0.75, s = 0.65
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-logistic.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .logistic(mu: mu, s: s))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .logistic(mu: mu, s: s))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "logistic")
+//        }
+//        let r = MLEFitter<Double>.fitLogistic(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.central, seed: 0xC0FF_EE)
+//        )
+//        print("#############################\nDistribution: Logistic")
+//        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), s=\(s)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Student's t (nu only in fitter; generate standard t)
+//    do {
+//        let nu = 7.5
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-student.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .studentT(mu: 0, sigma: 1, nu: nu))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .studentT(mu: 0, sigma: 1, nu: nu))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "student")
+//        }
+//        let r = MLEFitter<Double>.fitStudentsT(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.central, seed: 0x0707_E7E7)
+//        )
+//        print("#############################\nDistribution: Student's t (nu only)")
+//        print("thetaHat =", r.thetaHat, " (true [nu=\(nu)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Fisher F(d1, d2)
+//    do {
+//        let d1 = 10.0, d2 = 14.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-fisher.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .f(d1: d1, d2: d2))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .f(d1: d1, d2: d2))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "fisher")
+//        }
+//        let r = MLEFitter<Double>.fitFisherF(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.central, seed: 0x0F17_F17)
+//        )
+//        print("#############################\nDistribution: Fisher F")
+//        print("thetaHat =", r.thetaHat, " (true [d1=\(d1), d2=\(d2)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Inverse-Gamma(alpha, beta): derive from Gamma(alpha,1)
+//    do {
+//        let alpha = 3.0, beta = 2.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-inverseGamma.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                let y = RNGSampler<Double>.randoms(n: 10_000, dist: .gamma(shape: alpha, scale: 1))
+//                data = y.map { beta / $0 }
+//            }
+//        }
+//        else {
+//            let y = RNGSampler<Double>.randoms(n: 10_000, dist: .gamma(shape: alpha, scale: 1))
+//            data = y.map { beta / $0 }
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "inverseGamma")
+//        }
+//        var opts = demoOptions(.central, seed: 0x01AF_E0)
+//        let mean = data.reduce(0.0, +) / Double(data.count)
+//        let variance = max(data.reduce(0.0) { $0 + ($1 - mean) * ($1 - mean) } / Double(data.count - 1), 1e-6)
+//        let alphaGuess = max(2.05, 2.0 + (mean * mean) / variance)
+//        let betaGuess = max(1e-3, mean * (alphaGuess - 1.0))
+//        opts.warmStartTheta = [alphaGuess, betaGuess]
+//        let r = MLEFitter<Double>.fitInverseGamma(data, optimizer: .lbfgs, options: opts)
+//        print("#############################\nDistribution: Inverse-Gamma")
+//        print("thetaHat =", r.thetaHat, " (true [alpha=\(alpha), beta=\(beta)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Skew-Normal(xi, omega, alpha)
+//    do {
+//        let xi = -0.2, omega = 1.1, alpha = 3.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-skewNormal.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .skewNormal(xi: xi, omega: omega, alpha: alpha))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .skewNormal(xi: xi, omega: omega, alpha: alpha))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "skewNormal")
+//        }
+//        let r = MLEFitter<Double>.fitSkewNormal(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.heavyTail, seed: 0x05AE_E5)
+//        )
+//        print("#############################\nDistribution: Skew-Normal")
+//        print("thetaHat =", r.thetaHat, " (true [xi=\(xi), omega=\(omega), alpha=\(alpha)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Noncentral Chi-Squared(k, lambda)
+//    do {
+//        let k = 6.0, lambda = 5.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-chiSquare.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: k, lambda: lambda))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: k, lambda: lambda))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-chiSquare")
+//        }
+//        let r = MLEFitter<Double>.fitNCChiSquared(
+//            data,
+//            degreesOfFreedom: k,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.noncentral, seed: 0x0AC2_C2)
+//        )
+//        print("#############################\nDistribution: Noncentral Chi-Squared")
+//        print("thetaHat =", r.thetaHat, " (true [lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Noncentral Student's t(nu, delta) - generate standard (mu=0, sigma=1)
+//    do {
+//        let nu = 9.0, delta = 5.0
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-student.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralT(mu: 0, sigma: 1, nu: nu, delta: delta))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralT(mu: 0, sigma: 1, nu: nu, delta: delta))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-student")
+//        }
+//        let r = MLEFitter<Double>.fitNCStudentsT(
+//            data,
+//            degreesOfFreedom: nu,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.noncentral, seed: 0x00AC_E7)
+//        )
+//        print("#############################\nDistribution: Noncentral Student's t")
+//        print("thetaHat =", r.thetaHat, " (true [delta=\(delta)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
+//
+//    // Noncentral Fisher F(d1, d2, lambda): compose from nc-chi^2 and chi^2
+//    do {
+//        let d1 = 8.0, d2 = 16.0, lambda = 3.5
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-fisher.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                let x1 = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: d1, lambda: lambda))
+//                let x2 = RNGSampler<Double>.randoms(n: 10_000, dist: .chiSquare(df: d2))
+//                data = zip(x1, x2).map { (a, b) in (a / d1) / (b / d2) }
+//            }
+//        }
+//        else {
+//            let x1 = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: d1, lambda: lambda))
+//            let x2 = RNGSampler<Double>.randoms(n: 10_000, dist: .chiSquare(df: d2))
+//            data = zip(x1, x2).map { (a, b) in (a / d1) / (b / d2) }
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-fisher")
+//        }
+//        var opt = demoOptions(.noncentral, seed: 0x0ACF_001 ^ 0x0ACF_002)
+//        let meanF = max((try? SSExamine<Double, Double>(using: data, levelOfMeasurement: .ratio, name: nil, characterSet: nil).arithmeticMean) ?? 1.0, 1.000001)
+//        let lamWarm = max(((d1 * (d2 - 2.0)) / d2) * meanF - d1, 1e-6)
+//        opt.warmStartTheta = [lamWarm]
+//        
+//        // Now fit
+//        let r = MLEFitter<Double>.fitNCFisherF(data,df1: d1, df2: d2, optimizer: .lbfgs, options: opt)
+//        print("ncF thetaHat =", r.thetaHat, "logLik =", r.logLik, "iters =", r.iterations, "converged =", r.converged)
+//        if let sols = r.allSolutions {
+//            print("All terminal solutions (thetaHat, logLik):")
+//            for (th, ll) in sols { print(th, ll) }
+//            print("Unique u-solutions:", r.uniqueSolutionCount ?? 0)
+//            if let uniqTheta = r.uniqueSolutionCountTheta {
+//                print("Unique theta-solutions:", uniqTheta)
+//            }
+//            if let cond = r.conditionNumberEstimateHu {
+//                let source = r.conditionSource ?? "H_u"
+//                print("Condition estimate [\(source)]:", cond)
+//            }
+//            if let reason = r.convergenceReason {
+//                print("Convergence reason:", reason.rawValue)
+//            }
+//            print("#############################\nDistribution: Noncentral Fisher F")
+//            print("thetaHat =", r.thetaHat, " (true [d1=\(d1), d2=\(d2), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//        }
+//    }
+//
+//    // Noncentral Beta(alpha, beta, lambda): compose from (nc-chi^2, chi^2)
+//    do {
+//        // Improve estimation stability via: larger n, method-of-moments warm start,
+//        // parameter scaling, light bounds, and a few multi-starts.
+//        let a = 3.0, b = 2.5, lambda = 1.2
+//        let n = 10_000 // larger sample improves identifiability for lambda
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-beta.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true),
+//           let d = dataEx.itemsAsNumericArray {
+//            data = d
+//        } else {
+//            let X = RNGSampler<Double>.randoms(n: n, dist: .noncentralChiSquare(k: 2 * a, lambda: 2 * lambda), seed: globalSeed)
+//            let Y = RNGSampler<Double>.randoms(n: n, dist: .chiSquare(df: 2 * b), seed: globalSeed ^ 0xA5A5)
+//            data = zip(X, Y).map { $0 / ($0 + $1) }
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-beta")
+//        }
+//
+//        // Moment-based warm start from the observed sample
+//        let ex: SSExamine<Double, Double> = .init(usingArray: data, name: "nc-beta", characterSet: nil)
+//        let m = max(min(ex.arithmeticMean ?? 0.5, 0.99), 0.01)
+//        let v = max(min(ex.sampleVariance ?? 0.02, 0.25), 1e-6)
+//        // For central Beta, MoM: alpha0 = m*((m*(1-m))/v - 1), beta0 = (1-m)*((m*(1-m))/v - 1)
+//        // Use these as a conservative anchor even for noncentral; let optimizer adjust lambda.
+//        let t = max((m * (1 - m)) / v - 1.0, 2.05) // ensure > 1 for stability
+//        let alpha0 = max(m * t, 1.05)
+//        let beta0  = max((1 - m) * t, 1.05)
+//        let lambda0 = max(0.2, min(5.0, 2.0 * abs((m - a/(a+b)))) ) // small positive start
+//
+//        var opts = demoOptions(.noncentral, optimizer: .lbfgs, seed: 0x0ACB_001)
+//        // Strengthen search a bit
+//        opts.multiStartCount = max(opts.multiStartCount, 8)
+//        opts.randomRestartCount = max(opts.randomRestartCount, 3)
+//        opts.boundaryPenaltyWeight = max(opts.boundaryPenaltyWeight, 1e-2)
+//        // Provide warm start and light parameter scaling
+//        opts.warmStartTheta = [alpha0, beta0, lambda0]
+//
+//        let r = MLEFitter<Double>.fitNCBeta(
+//            data,
+//            optimizer: .lbfgs,
+//            options: opts
+//        )
+//        print("#############################\nDistribution: Noncentral Beta")
+//        print("thetaHat =", r.thetaHat, " (true [alpha=\(a), beta=\(b), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//        if let cov = r.cov { print("Cov(thetaHat) approx", cov) }
+//        if let reason = r.convergenceReason { print("Convergence reason:", reason.rawValue) }
+//    }
+//
+//    // Holtsmark
+//    do {
+//        let mu = -1.5, c = 1.4
+//        let data: [Double]
+//        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-holtsmark.csv", directoryHint: .notDirectory)
+//        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
+//            if let d = dataEx.itemsAsNumericArray {
+//                data = d
+//            }
+//            else {
+//                data = RNGSampler<Double>.randoms(n: 1000, dist: .holtsmark(mu: mu, c: c ))
+//            }
+//        }
+//        else {
+//            data = RNGSampler<Double>.randoms(n: 1000, dist: .holtsmark(mu: mu, c: c ))
+//            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "holtsmark")
+//        }
+//        let r = MLEFitter<Double>.fitHoltsmark(
+//            data,
+//            optimizer: .lbfgs,
+//            options: demoOptions(.heavyTail, seed: 0x0A17_0005)
+//        )
+//        print("#############################\nDistribution: Holtsmark")
+//        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), c=\(c))", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+//    }
     do {
-        let rate = 2.5
+        let a: Double = 0, b: Double = 1
         let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-exponential.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let dd = dataEx.itemsAsNumericArray {
-                data = dd
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .exponential(rate: rate), seed: globalSeed)
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .exponential(rate: rate), seed: globalSeed)
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "exponential")
-        }
-        let r = MLEFitter<Double>.fitExponential(data: data)
-        print("#############################\nDistribution: Exponential(rate)")
-        print("thetaHat =", r.thetaHat, " (true [rate=\(rate)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Rayleigh (sigma): derive from U(0,1) using R = sigma sqrt(-2 ln U)
-    do {
-        let sigma = 1.2
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-rayleigh.csv", directoryHint: .notDirectory)
+        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-Landau.csv", directoryHint: .notDirectory)
         if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
             if let d = dataEx.itemsAsNumericArray {
                 data = d
             }
             else {
-                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-                data = u.map { sigma * sqrt(-2.0 * log(max($0, .leastNonzeroMagnitude))) }
+                data = RNGSampler<Double>.randoms(n: 10_000, dist: .landau(location: a, scale: b))
             }
         }
         else {
-            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-            data = u.map { sigma * sqrt(-2.0 * log(max($0, .leastNonzeroMagnitude))) }
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "rayleigh")
+            data = RNGSampler<Double>.randoms(n: 10_000, dist: .holtsmark(mu: a, c: b ))
+            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "Landau")
         }
-        let r = MLEFitter<Double>.fitRayleigh(data: data)
-        print("#############################\nDistribution: Rayleigh")
-        print("thetaHat =", r.thetaHat, " (true [sigma=\(sigma), sigma^2=\(sigma * sigma)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-
-    }
-
-    // Laplace(mu, b): derive from U(0,1)
-    do {
-        let mu = -10.0, b = 3.0
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-Laplace.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-                let centered = u.map { $0 - 0.5 }
-                data = centered.map { t -> Double in
-                    mu - b * (t >= 0 ? 1 : -1) * log(1 - 2 * abs(t))
-                }
-            }
-        }
-        else {
-            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-            let centered = u.map { $0 - 0.5 }
-            data = centered.map { t -> Double in
-                mu - b * (t >= 0 ? 1 : -1) * log(1 - 2 * abs(t))
-            }
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "Laplace")
-        }
-        let r = MLEFitter<Double>.fitLaplace(data: data)
-        print("#############################\nDistribution: Laplace")
-        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), b=\(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Uniform(a, b): derive from U(0,1)
-    do {
-        let a = -2.0, b = 5.0
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-Uniform.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-                data = u.map { a + (b - a) * $0 }
-            }
-        }
-        else {
-            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-            data = u.map { a + (b - a) * $0 }
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "Uniform")
-        }
-        let r = MLEFitter<Double>.fitUniform(data: data)
-        print("#############################\nDistribution: Uniform")
-        print("thetaHat =", r.thetaHat, " (true [\(a), \(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Wald (Inverse Gaussian): use normals and uniforms via randoms
-    do {
-        let mu = 1.0, lambda = 2.5
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-Wald.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                let z = RNGSampler<Double>.randoms(n: 10_000, dist: .gaussian(mean: 0, standardDeviation: 1), seed: globalSeed)
-                let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-                data = zip(z, u).map { (zVal, uVal) -> Double in
-                    let y = zVal * zVal
-                    let muOverLam = mu / lambda
-                    let term = mu + (mu * mu * y) * 0.5 * (1.0 / lambda) - (muOverLam * 0.5) * sqrt(4 * mu * lambda * y + mu * mu * y * y)
-                    return (uVal <= mu / (mu + term)) ? term : (mu * mu / term)
-                }
-            }
-        }
-        else {
-            let z = RNGSampler<Double>.randoms(n: 10_000, dist: .gaussian(mean: 0, standardDeviation: 1), seed: globalSeed)
-            let u = RNGSampler<Double>.randoms(n: 10_000, dist: .uniform01, seed: globalSeed)
-            data = zip(z, u).map { (zVal, uVal) -> Double in
-                let y = zVal * zVal
-                let muOverLam = mu / lambda
-                let term = mu + (mu * mu * y) * 0.5 * (1.0 / lambda) - (muOverLam * 0.5) * sqrt(4 * mu * lambda * y + mu * mu * y * y)
-                return (uVal <= mu / (mu + term)) ? term : (mu * mu / term)
-            }
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "Wald")
-        }
-        let r = MLEFitter<Double>.fitWald(data: data)
-        print("#############################\nDistribution: Wald (Inverse Gaussian)")
-        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Arcsine(a, b)
-    do {
-        let a = -1.5, b = 2.0
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-ArcSine.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data  = RNGSampler<Double>.randoms(n: 10_000, dist: .arcsine(a: a, b: b))
-            }
-        }
-        else {
-            data  = RNGSampler<Double>.randoms(n: 10_000, dist: .arcsine(a: a, b: b))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "ArcSine")
-        }
-        let r = MLEFitter<Double>.fitArcsine(data: data)
-        print("#############################\nDistribution: Arcsine")
-        print("thetaHat =", r.thetaHat, " (true [a=\(a), b=\(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Beta(alpha, beta)
-    do {
-        let a = 2.2, b = 0.6
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-beta.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .beta(a: a, b: b))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .beta(a: a, b: b))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "beta")
-        }
-        let r = MLEFitter<Double>.fitBeta(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.central, seed: 0x00BA_DA55)
-        )
-        print("#############################\nDistribution: Beta")
-        print("thetaHat =", r.thetaHat, " (true [alpha=\(a), beta=\(b)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Gamma(k, theta)
-    do {
-        let k = 2.0, th = 1.35
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-gamma.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 1000, dist: .gamma(shape: k, scale: th))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 1000, dist: .gamma(shape: k, scale: th))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "gamma")
-        }
-        let r = MLEFitter<Double>.fitGamma(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.central, seed: 0xFACE_B00C)
-        )
-        print("#############################\nDistribution: Gamma")
-        print("thetaHat =", r.thetaHat, " (true [k=\(k), theta=\(th)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Weibull(k, lambda)
-    do {
-        let k = 1.4, lambda = 0.9
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-weibull.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .weibull(k: k, lambda: lambda))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .weibull(k: k, lambda: lambda))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "weibull")
-        }
-        let r = MLEFitter<Double>.fitWeibull(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.central, seed: 0xDEAD_C0DE)
-        )
-        print("#############################\nDistribution: Weibull")
-        print("thetaHat =", r.thetaHat, " (true [k=\(k), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Cauchy(mu, gamma)
-    do {
-        let mu = 0.3, gamma = 1.1
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-cauchy.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .cauchy(mu: mu, gamma: gamma))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .cauchy(mu: mu, gamma: gamma))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "cauchy")
-        }
-        let r = MLEFitter<Double>.fitCauchy(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.heavyTail, seed: 0xC0C0_A)
-        )
-        print("#############################\nDistribution: Cauchy")
-        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), gamma=\(gamma)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Logistic(mu, s)
-    do {
-        let mu = -0.75, s = 0.65
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-logistic.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .logistic(mu: mu, s: s))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .logistic(mu: mu, s: s))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "logistic")
-        }
-        let r = MLEFitter<Double>.fitLogistic(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.central, seed: 0xC0FF_EE)
-        )
-        print("#############################\nDistribution: Logistic")
-        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), s=\(s)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Student's t (nu only in fitter; generate standard t)
-    do {
-        let nu = 7.5
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-student.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .studentT(mu: 0, sigma: 1, nu: nu))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .studentT(mu: 0, sigma: 1, nu: nu))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "student")
-        }
-        let r = MLEFitter<Double>.fitStudentsT(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.central, seed: 0x0707_E7E7)
-        )
-        print("#############################\nDistribution: Student's t (nu only)")
-        print("thetaHat =", r.thetaHat, " (true [nu=\(nu)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Fisher F(d1, d2)
-    do {
-        let d1 = 10.0, d2 = 14.0
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-fisher.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .f(d1: d1, d2: d2))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .f(d1: d1, d2: d2))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "fisher")
-        }
-        let r = MLEFitter<Double>.fitFisherF(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.central, seed: 0x0F17_F17)
-        )
-        print("#############################\nDistribution: Fisher F")
-        print("thetaHat =", r.thetaHat, " (true [d1=\(d1), d2=\(d2)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Inverse-Gamma(alpha, beta): derive from Gamma(alpha,1)
-    do {
-        let alpha = 3.0, beta = 2.0
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-inverseGamma.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                let y = RNGSampler<Double>.randoms(n: 10_000, dist: .gamma(shape: alpha, scale: 1))
-                data = y.map { beta / $0 }
-            }
-        }
-        else {
-            let y = RNGSampler<Double>.randoms(n: 10_000, dist: .gamma(shape: alpha, scale: 1))
-            data = y.map { beta / $0 }
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "inverseGamma")
-        }
-        var opts = demoOptions(.central, seed: 0x01AF_E0)
-        let mean = data.reduce(0.0, +) / Double(data.count)
-        let variance = max(data.reduce(0.0) { $0 + ($1 - mean) * ($1 - mean) } / Double(data.count - 1), 1e-6)
-        let alphaGuess = max(2.05, 2.0 + (mean * mean) / variance)
-        let betaGuess = max(1e-3, mean * (alphaGuess - 1.0))
-        opts.warmStartTheta = [alphaGuess, betaGuess]
-        let r = MLEFitter<Double>.fitInverseGamma(data, optimizer: .lbfgs, options: opts)
-        print("#############################\nDistribution: Inverse-Gamma")
-        print("thetaHat =", r.thetaHat, " (true [alpha=\(alpha), beta=\(beta)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Skew-Normal(xi, omega, alpha)
-    do {
-        let xi = -0.2, omega = 1.1, alpha = 3.0
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-skewNormal.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .skewNormal(xi: xi, omega: omega, alpha: alpha))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .skewNormal(xi: xi, omega: omega, alpha: alpha))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "skewNormal")
-        }
-        let r = MLEFitter<Double>.fitSkewNormal(
-            data,
-            optimizer: .lbfgs,
-            options: demoOptions(.heavyTail, seed: 0x05AE_E5)
-        )
-        print("#############################\nDistribution: Skew-Normal")
-        print("thetaHat =", r.thetaHat, " (true [xi=\(xi), omega=\(omega), alpha=\(alpha)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Noncentral Chi-Squared(k, lambda)
-    do {
-        let k = 6.0, lambda = 5.0
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-chiSquare.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: k, lambda: lambda))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: k, lambda: lambda))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-chiSquare")
-        }
-        let r = MLEFitter<Double>.fitNCChiSquared(
-            data,
-            degreesOfFreedom: k,
-            optimizer: .lbfgs,
-            options: demoOptions(.noncentral, seed: 0x0AC2_C2)
-        )
-        print("#############################\nDistribution: Noncentral Chi-Squared")
-        print("thetaHat =", r.thetaHat, " (true [lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Noncentral Student's t(nu, delta) - generate standard (mu=0, sigma=1)
-    do {
-        let nu = 9.0, delta = 1.25
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-student.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralT(mu: 0, sigma: 1, nu: nu, delta: delta))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralT(mu: 0, sigma: 1, nu: nu, delta: delta))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-student")
-        }
-        let r = MLEFitter<Double>.fitNCStudentsT(
-            data,
-            degreesOfFreedom: nu,
-            optimizer: .lbfgs,
-            options: demoOptions(.noncentral, seed: 0x00AC_E7)
-        )
-        print("#############################\nDistribution: Noncentral Student's t")
-        print("thetaHat =", r.thetaHat, " (true [delta=\(delta)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-    }
-
-    // Noncentral Fisher F(d1, d2, lambda): compose from nc-chi^2 and chi^2
-    do {
-        let d1 = 8.0, d2 = 16.0, lambda = 3.5
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-fisher.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                let x1 = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: d1, lambda: lambda))
-                let x2 = RNGSampler<Double>.randoms(n: 10_000, dist: .chiSquare(df: d2))
-                data = zip(x1, x2).map { (a, b) in (a / d1) / (b / d2) }
-            }
-        }
-        else {
-            let x1 = RNGSampler<Double>.randoms(n: 10_000, dist: .noncentralChiSquare(k: d1, lambda: lambda))
-            let x2 = RNGSampler<Double>.randoms(n: 10_000, dist: .chiSquare(df: d2))
-            data = zip(x1, x2).map { (a, b) in (a / d1) / (b / d2) }
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-fisher")
-        }
-        var opt = demoOptions(.noncentral, seed: 0x0ACF_001 ^ 0x0ACF_002)
-        let meanF = max((try? SSExamine<Double, Double>(using: data, levelOfMeasurement: .ratio, name: nil, characterSet: nil).arithmeticMean) ?? 1.0, 1.000001)
-        let lamWarm = max(((d1 * (d2 - 2.0)) / d2) * meanF - d1, 1e-6)
-        opt.warmStartTheta = [lamWarm]
-        
-        // Now fit
-        let r = MLEFitter<Double>.fitNCFisherF(data,df1: d1, df2: d2, optimizer: .lbfgs, options: opt)
-        print("ncF thetaHat =", r.thetaHat, "logLik =", r.logLik, "iters =", r.iterations, "converged =", r.converged)
-        if let sols = r.allSolutions {
-            print("All terminal solutions (thetaHat, logLik):")
-            for (th, ll) in sols { print(th, ll) }
-            print("Unique u-solutions:", r.uniqueSolutionCount ?? 0)
-            if let uniqTheta = r.uniqueSolutionCountTheta {
-                print("Unique theta-solutions:", uniqTheta)
-            }
-            if let cond = r.conditionNumberEstimateHu {
-                let source = r.conditionSource ?? "H_u"
-                print("Condition estimate [\(source)]:", cond)
-            }
-            if let reason = r.convergenceReason {
-                print("Convergence reason:", reason.rawValue)
-            }
-            print("#############################\nDistribution: Noncentral Fisher F")
-            print("thetaHat =", r.thetaHat, " (true [d1=\(d1), d2=\(d2), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-        }
-    }
-
-    // Noncentral Beta(alpha, beta, lambda): compose from (nc-chi^2, chi^2)
-    do {
-        // Improve estimation stability via: larger n, method-of-moments warm start,
-        // parameter scaling, light bounds, and a few multi-starts.
-        let a = 3.0, b = 2.5, lambda = 1.2
-        let n = 10_000 // larger sample improves identifiability for lambda
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-nc-beta.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true),
-           let d = dataEx.itemsAsNumericArray {
-            data = d
-        } else {
-            let X = RNGSampler<Double>.randoms(n: n, dist: .noncentralChiSquare(k: 2 * a, lambda: 2 * lambda), seed: globalSeed)
-            let Y = RNGSampler<Double>.randoms(n: n, dist: .chiSquare(df: 2 * b), seed: globalSeed ^ 0xA5A5)
-            data = zip(X, Y).map { $0 / ($0 + $1) }
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "nc-beta")
-        }
-
-        // Moment-based warm start from the observed sample
-        let ex: SSExamine<Double, Double> = .init(usingArray: data, name: "nc-beta", characterSet: nil)
-        let m = max(min(ex.arithmeticMean ?? 0.5, 0.99), 0.01)
-        let v = max(min(ex.sampleVariance ?? 0.02, 0.25), 1e-6)
-        // For central Beta, MoM: alpha0 = m*((m*(1-m))/v - 1), beta0 = (1-m)*((m*(1-m))/v - 1)
-        // Use these as a conservative anchor even for noncentral; let optimizer adjust lambda.
-        let t = max((m * (1 - m)) / v - 1.0, 2.05) // ensure > 1 for stability
-        let alpha0 = max(m * t, 1.05)
-        let beta0  = max((1 - m) * t, 1.05)
-        let lambda0 = max(0.2, min(5.0, 2.0 * abs((m - a/(a+b)))) ) // small positive start
-
-        var opts = demoOptions(.noncentral, optimizer: .lbfgs, seed: 0x0ACB_001)
-        // Strengthen search a bit
-        opts.multiStartCount = max(opts.multiStartCount, 8)
-        opts.randomRestartCount = max(opts.randomRestartCount, 3)
-        opts.boundaryPenaltyWeight = max(opts.boundaryPenaltyWeight, 1e-2)
-        // Provide warm start and light parameter scaling
-        opts.warmStartTheta = [alpha0, beta0, lambda0]
-
-        let r = MLEFitter<Double>.fitNCBeta(
-            data,
-            optimizer: .lbfgs,
-            options: opts
-        )
-        print("#############################\nDistribution: Noncentral Beta")
-        print("thetaHat =", r.thetaHat, " (true [alpha=\(a), beta=\(b), lambda=\(lambda)])", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
-        if let cov = r.cov { print("Cov(thetaHat) approx", cov) }
-        if let reason = r.convergenceReason { print("Convergence reason:", reason.rawValue) }
-    }
-
-    // Holtsmark
-    do {
-        let mu = -1.5, c = 1.4
-        let data: [Double]
-        let sourceDir = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "TestFiles/RND-holtsmark.csv", directoryHint: .notDirectory)
-        if let dataEx = SSExamine<Double, Double>.loadReals(from: sourceDir.path, separator: ",", encoding: .utf8, allowNaNAndInfinity: true) {
-            if let d = dataEx.itemsAsNumericArray {
-                data = d
-            }
-            else {
-                data = RNGSampler<Double>.randoms(n: 1000, dist: .holtsmark(mu: mu, c: c ))
-            }
-        }
-        else {
-            data = RNGSampler<Double>.randoms(n: 1000, dist: .holtsmark(mu: mu, c: c ))
-            writeTestValues(examine: SSExamine<Double,Double>.init(usingArray: data, name: nil, characterSet: nil), name: "holtsmark")
-        }
-        let r = MLEFitter<Double>.fitHoltsmark(
-            data,
+        let r = MLEFitter<Double>.fitLandau(
+            data ,
             optimizer: .lbfgs,
             options: demoOptions(.heavyTail, seed: 0x0A17_0005)
         )
-        print("#############################\nDistribution: Holtsmark")
-        print("thetaHat =", r.thetaHat, " (true [mu=\(mu), c=\(c))", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
+        print("#############################\nDistribution: Landau")
+        print("thetaHat =", r.thetaHat, " (true [a=\(a), b=\(b))", " logLik =", r.logLik, " iter =", r.iterations, " converged =", r.converged)
     }
+
 
 }
 
