@@ -1,20 +1,20 @@
 # SwiftyStats
 
-SwiftyStats is a Swift Package that delivers a concurrency-safe toolkit for inspecting univariate samples - making heavy use of generics. The core `SSExamine` type tracks raw insertion order, absolute and relative frequencies, and produces cumulative views, making it useful for exploratory statistics in apps, scripts, or server tooling. A lightweight CLI (`swiftystats-demo`) ships with the package for quick experimentation.
+SwiftyStats is a Swift package that provides a concurrency-safe toolkit for inspecting univariate samples, making extensive use of generics. The core SSExamine type preserves the raw insertion order, tracks absolute and relative frequencies, and produces cumulative views, making it suitable for exploratory statistics in apps, scripts, or server-side tooling. A lightweight CLI (swiftystats-demo) is included for quick experimentation.
 
 ## Release Status
 
 SwiftPM versions are published via git tags. Replace `2.0.1` with the tag you want to depend on.
 
-## Features
+## Featuers
 
-- Thread-safe sample container (`SSExamine`) with raw-order reconstruction, frequency tables, and Codable support.
-- `SSDataFrame` for lightweight tabular storage with JSON persistence and optional ZIP compression.
-- Inferential tests (parametric, non-parametric, variance, and outlier checks) under `Inferential`.
-- MLE fitters and a shared solver for common distributions, with analytic and numerical options.
-- Time series smoothing, autocorrelation, and exact Durbin-Watson helpers.
-- Integration with [SwiftyBoost](https://github.com/strike65/SwiftyBoost.git) for advanced numeric routines.
-- Ready-to-run demo executable plus a Swift Testing suite covering SSExamine, MLE, and time series helpers.
+• Thread-safe sample container (SSExamine) with raw-order reconstruction, frequency tables, and Codable support.
+• SSDataFrame for lightweight tabular storage with JSON persistence and optional ZIP compression.
+• Inferential tests (parametric, non-parametric, variance, and outlier checks) under Inferential.
+• MLE fitters and a shared solver for common distributions, with analytic and numerical options.
+• Time-series smoothing, autocorrelation, and exact Durbin–Watson helpers.
+• Integration with SwiftyBoost for advanced numerical routines.
+• A ready-to-run demo executable plus a Swift Testing suite covering SSExamine, MLE, and time-series helpers.
 
 ## Modules
 
