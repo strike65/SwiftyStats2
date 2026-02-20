@@ -9,6 +9,7 @@ SwiftPM versions are published via git tags. Replace `2.0.1` with the tag you wa
 ## Featuers
 
 • Thread-safe sample container (SSExamine) with raw-order reconstruction, frequency tables, and Codable support.
+
 • SSDataFrame for lightweight tabular storage with JSON persistence and optional ZIP compression.
 • Inferential tests (parametric, non-parametric, variance, and outlier checks) under Inferential.
 • MLE fitters and a shared solver for common distributions, with analytic and numerical options.
